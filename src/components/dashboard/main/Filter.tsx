@@ -2,9 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { EarthquakeData } from '@/contexts/DataContext';
+import { EarthquakeFilter } from '@/contexts/FilterContext';
 import { cn } from '@/lib/utils';
-import { TrashIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
+import { memo, useContext, useState } from 'react';
 
 const filter = {
   date: "date",
@@ -16,6 +19,52 @@ const filter = {
   depth_km: "float",
   depth_class: "string",
 };
+
+function FilterDate() {
+  const {dateRange} = useContext(EarthquakeData)
+  const {dateFilter, setDateFilter} = useContext(EarthquakeFilter)
+
+  function handleChange(value: number[]) {
+    setDateFilter({
+      startDate: new Date(value[0]).toISOString(),
+      endDate: new Date(value[1]).toISOString(),
+    })
+  }
+
+  return (
+    <>
+      <Slider step={86400} min={new Date(dateRange.startDate).getTime()} max={new Date(dateRange.endDate || dateRange.startDate).getTime()} defaultValue={[new Date(dateRange.startDate).getTime(), new Date(dateRange.endDate || dateRange.startDate).getTime()]} onValueChange={value => handleChange(value)}/>
+      <div className='flex justify-between text-xs mt-2'>
+        <p>{String(new Date(dateFilter.startDate).getDate()).padStart(2, "0")}/{String(new Date(dateFilter.startDate).getMonth() + 1).padStart(2, "0")}/{String(new Date(dateFilter.startDate).getFullYear())}</p>
+        <p>{String(new Date(dateFilter.endDate || dateFilter.startDate).getDate()).padStart(2, "0")}/{String(new Date(dateFilter.endDate || dateFilter.startDate).getMonth() + 1).padStart(2, "0")}/{String(new Date(dateFilter.endDate || dateFilter.startDate).getFullYear())}</p>
+      </div>
+    </>
+  )
+}
+
+function FilterLatitude() {
+  const {earthquake} = useContext(EarthquakeData)
+  const {latitude, setLatitude} = useContext(EarthquakeFilter)
+
+  const latitudes = earthquake.map(feature => feature.properties['latitude'])
+
+  function handleChange(value: number[]) {
+    setLatitude({
+      minLatitude: value[0],
+      maxLatitude: value[1]
+    })
+  }
+
+  return (
+    <>
+      <Slider step={0.01} min={Math.min(...latitudes)} max={Math.max(...latitudes)} defaultValue={[Math.min(...latitudes), Math.max(...latitudes)]} onValueChange={value => handleChange(value)}/>
+      <div className='flex justify-between text-xs mt-2'>
+        <p>{latitude.minLatitude}</p>
+        <p>{latitude.maxLatitude}</p>
+      </div>
+    </>
+  )
+}
 
 function Filter() {
   const [filterList, setFilterList] = useState<{ id: string; deleted: boolean; selectedOption?: string }[]>([]);
@@ -62,7 +111,10 @@ function Filter() {
 
   return (
     <>
-      <Button onClick={handleAddFilter}>Add Filter</Button>
+      <div className='flex justify-between items-center mb-2'>
+        <h1>Filter</h1>
+        <Button size="icon" onClick={handleAddFilter}><PlusIcon /></Button>
+      </div>
       <ScrollArea className="h-80">
         <ul className="flex flex-col gap-2">
           {filterList.map((item) => {
@@ -75,14 +127,13 @@ function Filter() {
                       <Select 
                         value={item.selectedOption || ""}
                         onValueChange={(value) => handleFilterChange(item.id, value)}
-                        
                       >
                         <SelectTrigger className='min-w-44'>
                           <SelectValue placeholder="Pilih field" />
                         </SelectTrigger>
                         <SelectContent>
                           {Object.entries(options).map(([key, value]) => (
-                            <SelectItem value={key}>
+                            <SelectItem key={key} value={key}>
                               <span className={cn(value === 'float' ? 'bg-yellow-500 border-yellow-500' : value === 'string' ? 'bg-green-500 border-green-500' : value === 'integer' ? 'bg-blue-500 border-blue-500' : 'bg-orange-500 border-orange-500',
                                 'p-1 border rounded mr-2 bg-opacity-50'
                               )}>{value}</span>
@@ -97,7 +148,8 @@ function Filter() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    heheh
+                    {item.selectedOption === 'date' && <FilterDate />}
+                    {item.selectedOption === 'latitude' && <FilterLatitude />}
                   </CardContent>
                 </Card>
               </li>
@@ -109,4 +161,4 @@ function Filter() {
   );
 }
 
-export default Filter;
+export default memo(Filter);

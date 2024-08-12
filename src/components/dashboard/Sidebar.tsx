@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register({
   CategoryScale,
@@ -36,12 +37,14 @@ ChartJS.register({
   Title,
   Tooltip,
   Legend,
+  ChartDataLabels
 });
 
 interface MagnitudePie {
   "Gempa Kecil": number;
   "Gempa Menengah": number;
   "Gempa Besar": number;
+  "Gempa Megathrust": number;
 }
 
 interface DepthPie {
@@ -52,10 +55,12 @@ interface DepthPie {
 
 function Infobar() {
   const { earthquake, dateRange } = useContext(EarthquakeData);
+  const {theme} = useTheme()
   const [magnitudePie, setMagnitudePie] = useState<MagnitudePie>({
     "Gempa Kecil": 0,
     "Gempa Menengah": 0,
     "Gempa Besar": 0,
+    "Gempa Megathrust": 0
   });
   const [depthPie, setDepthPie] = useState<DepthPie>({
     "Gempa Dangkal": 0,
@@ -82,6 +87,9 @@ function Infobar() {
       ).length,
       "Gempa Besar": earthquake.filter(
         (item) => item.properties.magnitude_class === "Gempa Besar"
+      ).length,
+      "Gempa Megathrust": earthquake.filter(
+        (item) => item.properties.magnitude_class === "Gempa Megathrust"
       ).length,
     });
     setDepthPie({
@@ -139,6 +147,13 @@ function Infobar() {
                     boxWidth: 16,
                   },
                 },
+                datalabels: {
+                  display: 'auto',
+                  color: theme === 'light' ? 'black' : 'white',
+                  font: {
+                    weight: 'bold'
+                  },
+                }
               },
             }}
             data={{
@@ -147,6 +162,7 @@ function Infobar() {
                 {
                   data: Object.values(depthPie),
                   backgroundColor: depthColor,
+                  borderWidth: 0
                 },
               ],
             }}
@@ -174,6 +190,13 @@ function Infobar() {
                     boxWidth: 16,
                   },
                 },
+                datalabels: {
+                  display: 'auto',
+                  color: theme === 'light' ? 'black' : 'white',
+                  font: {
+                    weight: 'bold'
+                  },
+                }
               },
             }}
             data={{
@@ -182,6 +205,7 @@ function Infobar() {
                 {
                   data: Object.values(magnitudePie),
                   backgroundColor: depthColor,
+                  borderWidth: 0
                 },
               ],
             }}

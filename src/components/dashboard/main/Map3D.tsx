@@ -2,6 +2,7 @@ import { EarthquakeData } from "@/contexts/DataContext";
 import { useContext, useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import { depthColor } from "@/styles/dataStyle";
+import { EarthquakeFilter } from "@/contexts/FilterContext";
 
 interface CustomGeometry {
   latitudes: number[];
@@ -10,7 +11,8 @@ interface CustomGeometry {
 }
 
 function Map3D() {
-  const {indonesiaJSON, earthquake} = useContext(EarthquakeData)
+  const {indonesiaJSON} = useContext(EarthquakeData)
+  const {filteredEarthquake} = useContext(EarthquakeFilter)
   const [earthquakeData, setEarthquakeData] = useState<CustomGeometry>({
     latitudes: [],
     longitudes: [],
@@ -41,11 +43,11 @@ function Map3D() {
     })
 
     setEarthquakeData({
-      latitudes: earthquake.map(feature => feature.geometry.coordinates[1]),
-      longitudes: earthquake.map(feature => feature.geometry.coordinates[0]),
-      depth: earthquake.map(feature => feature.properties.depth_km * -1)
+      latitudes: filteredEarthquake.map(feature => feature.geometry.coordinates[1]),
+      longitudes: filteredEarthquake.map(feature => feature.geometry.coordinates[0]),
+      depth: filteredEarthquake.map(feature => feature.properties.depth_km * -1)
     })
-  }, [earthquake])
+  }, [filteredEarthquake])
 
   return (
     <Plot 
@@ -67,7 +69,7 @@ function Map3D() {
           y: earthquakeData.latitudes,
           z: earthquakeData.depth,
           marker: {
-            size: earthquake.map(feature => {
+            size: filteredEarthquake.map(feature => {
               if (feature.properties.magnitude_class === 'Gempa Kecil') {
                 return 5
               } else if (feature.properties.magnitude_class === 'Gempa Menengah') {
@@ -78,7 +80,7 @@ function Map3D() {
                 return 15
               }
             }),
-            color: earthquake.map(feature => {
+            color: filteredEarthquake.map(feature => {
               if (feature.properties.depth_class === 'Gempa Dangkal') {
                 return depthColor[0]
               } else if (feature.properties.depth_class === 'Gempa Menengah') {
@@ -102,7 +104,9 @@ function Map3D() {
           },
           zaxis: { title: 'Depth' },
           camera: {
-            eye: {x: 0, y: -1, z: 1.5}
+            eye: {x: 0, y: -2, z: 1},
+            // center: {x: 0, y: 1, z: 1},
+            // up: {x: 1, y: 1, z: 1}
           },
           // aspectmode: 'manual',
           aspectratio: { x: 2, y: 1, z: 0.5 },

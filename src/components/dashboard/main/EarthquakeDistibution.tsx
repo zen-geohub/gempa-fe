@@ -2,13 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bubble } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   TimeScale,
   PointElement,
-  Title,
-  Tooltip,
-  Legend,
 } from "chart.js";
 import "chartjs-adapter-moment";
 import { DateRange, EarthquakeData } from "@/contexts/DataContext";
@@ -17,21 +12,18 @@ import { Button } from "@/components/ui/button";
 import { SizeIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { depthColor } from "@/styles/dataStyle";
+import { useTheme } from "@/components/theme-provider";
 
 ChartJS.register({
-  CategoryScale,
-  LinearScale,
   TimeScale,
   PointElement,
-  Title,
-  Tooltip,
-  Legend,
 });
 
 export type ModalProps = { asModal?: boolean };
 
 function ScatterChart({ asModal }: ModalProps) {
   const { earthquake, dateRange } = useContext(EarthquakeData);
+  const {theme} = useTheme()
   const [date, setDate] = useState<DateRange>({
     startDate: '',
     endDate: ''
@@ -55,6 +47,9 @@ function ScatterChart({ asModal }: ModalProps) {
           legend: {
             display: asModal ? true : false,
           },
+          datalabels: {
+            display: false
+          }
         },
         scales: {
           y: {
@@ -64,6 +59,9 @@ function ScatterChart({ asModal }: ModalProps) {
             title: {
               display: true,
               text: "Magnitude",
+            },
+            grid: {
+              color: theme === 'light' ? '#dddddd' : '#18181A'
             },
           },
           x: {
@@ -86,6 +84,9 @@ function ScatterChart({ asModal }: ModalProps) {
               //   }
               //   return "";
               // },
+            },
+            grid: {
+              color: theme === 'light' ? '#dddddd' : '#18181A'
             },
             title: {
               display: true,

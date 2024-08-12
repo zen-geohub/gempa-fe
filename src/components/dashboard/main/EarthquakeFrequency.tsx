@@ -2,30 +2,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
 } from "chart.js";
 import { ModalProps } from "./EarthquakeDistibution";
 import { Dialog, DialogHeader, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { SizeIcon } from "@radix-ui/react-icons";
+import { useTheme } from "@/components/theme-provider";
 
 ChartJS.register({
-  CategoryScale,
-  LinearScale,
   LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
 });
 
 function LineChart({ asModal }: ModalProps) {
+  const {theme} = useTheme()
+
   const chartData = {
     '2004': 2958,
     '2005': 5904,
@@ -57,6 +48,9 @@ function LineChart({ asModal }: ModalProps) {
           legend: {
             display: asModal ? true : false,
           },
+          datalabels: {
+            display: false
+          }
         },
         scales: {
           y: {
@@ -66,6 +60,9 @@ function LineChart({ asModal }: ModalProps) {
             title: {
               display: true,
               text: "Frekuensi",
+            },
+            grid: {
+              color: theme === 'light' ? '#dddddd' : '#18181A'
             },
           },
           x: {
@@ -79,6 +76,9 @@ function LineChart({ asModal }: ModalProps) {
               //   }
               //   return "";
               // },
+            },
+            grid: {
+              color: theme === 'light' ? '#dddddd' : '#18181A'
             },
             title: {
               display: true,

@@ -9,7 +9,7 @@ import {
 } from "react";
 import type {FeatureCollection} from 'geojson'
 
-type Earthquake = {
+export type Earthquake = {
   _id: string;
   type: string;
   properties: {

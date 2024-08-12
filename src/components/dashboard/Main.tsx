@@ -4,7 +4,7 @@ import MapLegend from "./main/MapLegend";
 import EarthquakeFrequency from "./main/EarthquakeFrequency";
 import EarthquakeDistribution from "./main/EarthquakeDistibution";
 import Map2D from "./main/Map2D";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Map3D from "./main/Map3D";
 import { EarthquakeData } from "@/contexts/DataContext";
 import { Card, CardContent } from "../ui/card";
@@ -16,11 +16,8 @@ function Main() {
   const [earthquakeLayer, setEarthquakeLayer] = useState<boolean>(true);
   const [heatmapLayer, setHeatmapLayer] = useState<boolean>(false);
   const [hexagonLayer, setHexagonLayer] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(earthquakeLayer);
-    
-  }, [earthquakeLayer])
+  const [faultLayer, setFaultLayer] = useState<boolean>(false);
+  const [seismicLayer, setSeismicLayer] = useState<boolean>(false);
 
   return (
     <main className="w-10/12 h-screen flex flex-col overflow-hidden">
@@ -34,10 +31,14 @@ function Main() {
             setHeatmap={setHeatmapLayer}
             hexagon={hexagonLayer}
             setHexagon={setHexagonLayer}
+            fault={faultLayer}
+            setFault={setFaultLayer}
+            seismic={seismicLayer}
+            setSeismic={setSeismicLayer}
           />
         )}
         {mapStatus === "2D" && <MapLegend />}
-        {mapStatus === "2D" ? <Map2D earthquakeLayer={earthquakeLayer} heatmapLayer={heatmapLayer} hexagonLayer={hexagonLayer} /> : <Map3D />}
+        {mapStatus === "2D" ? <Map2D faultLayer={faultLayer} seismicLayer={seismicLayer} earthquakeLayer={earthquakeLayer} heatmapLayer={heatmapLayer} hexagonLayer={hexagonLayer} /> : <Map3D />}
       </section>
       {earthquake.length > 0 ? (
         <footer className="w-full h-[15%] p-1 flex gap-2">
