@@ -6,8 +6,8 @@ import {
   PointElement,
 } from "chart.js";
 import "chartjs-adapter-moment";
-import { DateRange, EarthquakeData } from "@/contexts/DataContext";
-import { useContext, useEffect, useState } from "react";
+import { DateRange, useData } from "@/contexts/DataContext";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SizeIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -22,7 +22,7 @@ ChartJS.register({
 export type ModalProps = { asModal?: boolean };
 
 function ScatterChart({ asModal }: ModalProps) {
-  const { earthquake, dateRange } = useContext(EarthquakeData);
+  const { earthquake, dateRange } = useData();
   const {theme} = useTheme()
   const [date, setDate] = useState<DateRange>({
     startDate: '',

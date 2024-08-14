@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { EarthquakeData } from "@/contexts/DataContext";
+import { useData } from "@/contexts/DataContext";
 import { cn } from "@/lib/utils";
 import {
   CalendarIcon,
@@ -16,17 +16,11 @@ import {
   MixerHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import Filter from "./Filter";
 import { Card, CardContent } from "@/components/ui/card";
-import { EarthquakeFilter } from "@/contexts/FilterContext";
+import { useFilter } from "@/contexts/FilterContext";
 
 type MapStatus = string;
 
@@ -36,14 +30,14 @@ type ControlProps = {
 };
 
 function Control({ mapStatus, setMapStatus }: ControlProps) {
-  const {earthquake, dateRange, setDateRange } = useContext(EarthquakeData);
-  const {setDateFilter, setLatitude} = useContext(EarthquakeFilter)
+  const { earthquake, dateRange, setDateRange } = useData();
+  const { setDateFilter, setLatitude } = useFilter();
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
-  const [isControlOpen, setIsControlOpen] = useState<boolean>(false);
+  const [isControlOpen, setIsControlOpen] = useState<boolean>(true);
 
   useEffect(() => {
     setDateRange({
@@ -73,18 +67,20 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
   }, [date, setDateRange]);
 
   useEffect(() => {
-      const latitudes = earthquake.map(feature => feature.properties['latitude'])
-  
-      setDateFilter({
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate
-      })
-  
-      setLatitude({
-        minLatitude: Math.min(...latitudes),
-        maxLatitude: Math.max(...latitudes),
-      })
-    }, [dateRange, earthquake])
+    const latitudes = earthquake.map(
+      (feature) => feature.properties["latitude"]
+    );
+
+    setDateFilter({
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+    });
+
+    setLatitude({
+      minLatitude: Math.min(...latitudes),
+      maxLatitude: Math.max(...latitudes),
+    });
+  }, [dateRange, earthquake]);
 
   function handleChange(value: string) {
     setMapStatus(value);
@@ -115,16 +111,18 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
         </Button>
         <TabsList>
           <TabsTrigger value="control">
-            <DashboardIcon />
+            {/* <DashboardIcon /> */}
+            Kontrol
           </TabsTrigger>
           <TabsTrigger value="filter">
-            <MixerHorizontalIcon />
+            {/* <MixerHorizontalIcon /> */}
+            Filter
           </TabsTrigger>
         </TabsList>
         <TabsContent value="control">
           <Card>
             <CardContent className="min-w-64 p-2">
-              <h6>Rentang Data</h6>
+              <h6 className="px-2">Rentang Data</h6>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -158,6 +156,7 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
                     onSelect={(e) => {
                       setDate(e);
                     }}
+                    max={366}
                     fromYear={2004}
                     toYear={2023}
                     captionLayout="dropdown"
@@ -165,7 +164,7 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
                   />
                 </PopoverContent>
               </Popover>
-              <h6>Tampilan</h6>
+              <h6 className="mt-2 px-2">Tampilan Peta</h6>
               <Tabs
                 value={mapStatus}
                 className="w-full"

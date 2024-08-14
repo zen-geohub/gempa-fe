@@ -4,13 +4,13 @@ import MapLegend from "./main/MapLegend";
 import EarthquakeFrequency from "./main/EarthquakeFrequency";
 import EarthquakeDistribution from "./main/EarthquakeDistibution";
 import Map2D from "./main/Map2D";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Map3D from "./main/Map3D";
-import { EarthquakeData } from "@/contexts/DataContext";
+import { useData } from "@/contexts/DataContext";
 import { Card, CardContent } from "../ui/card";
 
 function Main() {
-  const { earthquake } = useContext(EarthquakeData);
+  const { earthquake } = useData();
   const [mapStatus, setMapStatus] = useState<string>("2D");
 
   const [earthquakeLayer, setEarthquakeLayer] = useState<boolean>(true);

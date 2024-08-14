@@ -64,6 +64,7 @@ function LayerControl({
           <Separator />
           <div className="flex items-center gap-2">
             <Checkbox
+              checked={fault}
               onCheckedChange={() => setFault(!fault)}
               id="fault"
             />
@@ -71,6 +72,7 @@ function LayerControl({
           </div>
           <div className="flex items-center gap-2">
             <Checkbox
+              checked={seismic}
               onCheckedChange={() => setSeismic(!seismic)}
               id="seismic"
             />
@@ -89,6 +91,7 @@ function LayerControl({
           <Separator />
           <div className="flex items-center gap-2">
             <Checkbox
+              checked={heatmap}
               onCheckedChange={() => setHeatmap(!heatmap)}
               id="heatmap"
             />
@@ -96,6 +99,7 @@ function LayerControl({
           </div>
           <div className="flex items-center gap-2">
             <Checkbox
+              checked={hexagon}
               onCheckedChange={() => setHexagon(!hexagon)}
               id="hexagon"
             />

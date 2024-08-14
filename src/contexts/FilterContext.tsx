@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { DateRange, Earthquake, EarthquakeData } from "./DataContext";
+import { DateRange, Earthquake, useData } from "./DataContext";
 
 type Year = number;
 type Latitude = {
@@ -42,7 +42,7 @@ interface Filter {
   setFilteredEarthquake: Dispatch<SetStateAction<Earthquake[]>>;
 }
 
-export const EarthquakeFilter = createContext<Filter>({
+const EarthquakeFilter = createContext<Filter>({
   dateFilter: {
     startDate: "",
     endDate: "",
@@ -69,8 +69,8 @@ export const EarthquakeFilter = createContext<Filter>({
   setFilteredEarthquake: () => {},
 });
 
-const FilterContext: FC<{ children: ReactNode }> = ({ children }) => {
-  const { earthquake } = useContext(EarthquakeData);
+export const FilterContext: FC<{ children: ReactNode }> = ({ children }) => {
+  const {earthquake} = useData()
 
   const [dateFilter, setDateFilter] = useState<DateRange>({
     startDate: "",
@@ -150,4 +150,8 @@ const FilterContext: FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-export default FilterContext;
+export const useFilter = () => {
+  const context = useContext(EarthquakeFilter)
+
+  return context
+}

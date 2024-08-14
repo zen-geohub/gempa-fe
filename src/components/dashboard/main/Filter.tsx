@@ -3,26 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { EarthquakeData } from '@/contexts/DataContext';
-import { EarthquakeFilter } from '@/contexts/FilterContext';
+import { useData } from '@/contexts/DataContext';
+import { useFilter } from '@/contexts/FilterContext';
 import { cn } from '@/lib/utils';
 import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
-import { memo, useContext, useState } from 'react';
+import { memo, useState } from 'react';
 
 const filter = {
-  date: "date",
-  year: "integer",
-  latitude: "float",
-  longitude: "float",
-  magnitude: "float",
-  magnitude_class: "string",
-  depth_km: "float",
-  depth_class: "string",
+  "Tanggal": "date",
+  "Tahun": "integer",
+  "Lintang": "float",
+  "Bujur": "float",
+  "Magnitudo": "float",
+  "Kelas Magnitudo": "string",
+  "Kedalaman (km)": "float",
+  "Kelas Kedalaman": "string",
 };
 
 function FilterDate() {
-  const {dateRange} = useContext(EarthquakeData)
-  const {dateFilter, setDateFilter} = useContext(EarthquakeFilter)
+  const { dateRange } = useData()
+  const {dateFilter, setDateFilter} = useFilter()
 
   function handleChange(value: number[]) {
     setDateFilter({
@@ -43,8 +43,8 @@ function FilterDate() {
 }
 
 function FilterLatitude() {
-  const {earthquake} = useContext(EarthquakeData)
-  const {latitude, setLatitude} = useContext(EarthquakeFilter)
+  const { earthquake } = useData()
+  const {latitude, setLatitude} = useFilter()
 
   const latitudes = earthquake.map(feature => feature.properties['latitude'])
 
@@ -148,7 +148,7 @@ function Filter() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {item.selectedOption === 'date' && <FilterDate />}
+                    {item.selectedOption === 'Tanggal' && <FilterDate />}
                     {item.selectedOption === 'latitude' && <FilterLatitude />}
                   </CardContent>
                 </Card>

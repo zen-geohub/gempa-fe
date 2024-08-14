@@ -1,8 +1,9 @@
-import { EarthquakeData } from "@/contexts/DataContext";
-import { useContext, useEffect, useState } from "react";
+import { useData } from "@/contexts/DataContext";
+import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import { depthColor } from "@/styles/dataStyle";
-import { EarthquakeFilter } from "@/contexts/FilterContext";
+import { useFilter } from "@/contexts/FilterContext";
+import { useTheme } from "@/components/theme-provider";
 
 interface CustomGeometry {
   latitudes: number[];
@@ -11,8 +12,9 @@ interface CustomGeometry {
 }
 
 function Map3D() {
-  const {indonesiaJSON} = useContext(EarthquakeData)
-  const {filteredEarthquake} = useContext(EarthquakeFilter)
+  const {theme} = useTheme()
+  const {indonesiaJSON} = useData()
+  const {filteredEarthquake} = useFilter()
   const [earthquakeData, setEarthquakeData] = useState<CustomGeometry>({
     latitudes: [],
     longitudes: [],
@@ -29,7 +31,6 @@ function Map3D() {
           idLongitude.push(point[0]);
           idLatitude.push(point[1]);
       });
-      // Mark the end of a polygon
       idLongitude.push(null);
       idLatitude.push(null);
     });
@@ -93,6 +94,7 @@ function Map3D() {
         }
       ]}
       layout={{
+        paper_bgcolor: theme === 'light' ? "#FFF" : "#020617",
         scene: {
           xaxis: { 
             title: 'Longitude', 
@@ -105,10 +107,7 @@ function Map3D() {
           zaxis: { title: 'Depth' },
           camera: {
             eye: {x: 0, y: -2, z: 1},
-            // center: {x: 0, y: 1, z: 1},
-            // up: {x: 1, y: 1, z: 1}
           },
-          // aspectmode: 'manual',
           aspectratio: { x: 2, y: 1, z: 0.5 },
         },
         margin: {

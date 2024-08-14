@@ -1,14 +1,18 @@
-import { EarthquakeData } from "@/contexts/DataContext";
 import { DeckGL } from "@deck.gl/react";
-import Map, { Layer, Source, useMap } from "react-map-gl/maplibre";
-import { useContext, useEffect, useState } from "react";
+import Map from "react-map-gl/maplibre";
+import { useEffect, useState } from "react";
 import { LayersList } from "@deck.gl/core";
 import { useTheme } from "@/components/theme-provider";
-import type { FeatureCollection } from "geojson";
-import { FilterSpecification } from "maplibre-gl";
-import { depthColor } from "@/styles/dataStyle";
 import { HeatmapLayer, HexagonLayer } from "@deck.gl/aggregation-layers";
-import { EarthquakeFilter } from "@/contexts/FilterContext";
+import { useFilter } from "@/contexts/FilterContext";
+import SeismicSensor from "./Map2D/SeismicSensor";
+import Fault from "./Map2D/Fault";
+import Megathrust from "./Map2D/Megathrust";
+// import Earthquake from "./Map2D/Earthquake";
+import { GeoJsonLayer } from "@deck.gl/layers";
+import type { FeatureCollection, Feature, Geometry } from "geojson";
+import { EarthquakeProperties, useData } from "@/contexts/DataContext";
+import Loading from "@/components/Loading";
 
 interface Map2DProps {
   earthquakeLayer: boolean;
@@ -18,53 +22,34 @@ interface Map2DProps {
   seismicLayer: boolean;
 }
 
-type DataPoint = [latitude: number, longitude: number, count?: number];
+type DataPoint = [
+  latitude: number,
+  longitude: number,
+  count: number,
+  depth_class: string,
+  magnitude_class: string
+];
 
-function SensorSeismik() {
-  const {current: map} = useMap();
-
-  useEffect(() => {
-    (async() => {
-      const image = await map?.loadImage('https://inatews.bmkg.go.id/assets_inatews/img/sensor.png')
-      if (map && image && !map.hasImage('sensor')) map.addImage('sensor', image.data);
-    })()
-  })
-
-  return (
-    <Source
-      type="vector"
-      scheme="tms"
-      tiles={[`${import.meta.env.VITE_GEOSERVER}/gwc/service/tms/1.0.0/ppids:sensorseismik_indonesia@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`]}
-    >
-      <Layer type="symbol" source-layer="sensorseismik_indonesia" layout={{"icon-image": 'sensor', "icon-size": 0.05, "icon-allow-overlap": true}}/>
-    </Source>
-  )
-}
-
-function FaultWorld() {
-  return (
-    <Source
-      type="vector"
-      scheme="tms"
-      tiles={[`${import.meta.env.VITE_GEOSERVER}/gwc/service/tms/1.0.0/ppids:fault_world@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`]}
-    >
-      <Layer type="line" source-layer="fault_world" paint={{"line-color": "#e6cc00", "line-width": 1, }}/>
-    </Source>
-  )
-}
-
-function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismicLayer }: Map2DProps) {
-  const { earthquake } = useContext(EarthquakeData);
-  const { dateFilter, latitude, filteredEarthquake } = useContext(EarthquakeFilter);
+function Map2D({
+  earthquakeLayer,
+  heatmapLayer,
+  hexagonLayer,
+  faultLayer,
+  seismicLayer,
+}: Map2DProps) {
+  const layers: LayersList = [];
+  const { filteredEarthquake } = useFilter();
+  const {loadingState} = useData()
   const { theme } = useTheme();
-  const [earthquakeFeature, setEarthquakeFeature] = useState<FeatureCollection>();
-
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
 
+  // const { earthquake } = useData();
+  const [earthquakeFeature, setEarthquakeFeature] = useState<FeatureCollection>();
+  
   useEffect(() => {
     setEarthquakeFeature({
       type: "FeatureCollection",
-      features: earthquake.map((feature) => ({
+      features: filteredEarthquake.map((feature) => ({
         type: "Feature",
         properties: {
           date: feature.properties["date"],
@@ -85,9 +70,7 @@ function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismi
         },
       })),
     });
-  }, [earthquake]);
-
-  const layers: LayersList = [];
+  }, [filteredEarthquake]);
 
   useEffect(() => {
     setFilteredData(
@@ -95,6 +78,8 @@ function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismi
         feature.geometry.coordinates[0],
         feature.geometry.coordinates[1],
         1,
+        feature.properties["depth_class"],
+        feature.properties["magnitude_class"],
       ])
     );
   }, [filteredEarthquake]);
@@ -137,15 +122,35 @@ function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismi
         },
       })
     );
+    console.log("hehee");
   }
 
-  const filter: FilterSpecification = [
-    "all",
-    [">=", ["get", "date"], dateFilter.startDate],
-    ["<=", ["get", "date"], dateFilter.endDate || dateFilter.startDate],
-    [">=", ["get", "latitude"], latitude.minLatitude],
-    ["<=", ["get", "latitude"], latitude.maxLatitude],
-  ];
+  if (earthquakeLayer) {
+    layers.push(
+      new GeoJsonLayer({
+        data: earthquakeFeature,
+        filled: true,
+        stroked: false,
+        pointType: 'circle',
+
+        getPointRadius: (f: Feature<Geometry, EarthquakeProperties>) => {
+          if (f.properties.magnitude_class === 'Gempa Kecil') {
+            return 4
+          } else if (f.properties.magnitude_class === 'Gempa Menengah') {
+            return 8
+          } else if (f.properties.magnitude_class === 'Gempa Besar') {
+            return 12
+          }
+          return 15
+        },
+        pointRadiusScale: 1000,
+        pointRadiusUnits: 'meters',
+        getFillColor: [255,255,255,255],
+        pickable: true,
+        autoHighlight: true,
+      })
+    )
+  }
 
   return (
     <DeckGL
@@ -156,6 +161,18 @@ function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismi
       }}
       controller
       layers={layers}
+      getTooltip={
+        ({object}) => object && 
+        `Tanggal: ${object.properties.date}
+        Tahun: ${object.properties.year}
+        Magnitudo: ${object.properties.magnitude}
+        Kelas Magnitudo: ${object.properties.magnitude_class}
+        Kedalaman (km): ${object.properties.depth_km}
+        Kelas Kedalaman: ${object.properties.depth_class}
+        `
+      }
+      onClick={({object}) => object && console.log(object)}
+      
     >
       <Map
         reuseMaps
@@ -166,38 +183,11 @@ function Map2D({ earthquakeLayer, heatmapLayer, hexagonLayer, faultLayer, seismi
             : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         }
       >
-        {seismicLayer && <SensorSeismik />}
-        {faultLayer && <FaultWorld />}
-        {earthquakeLayer && earthquakeFeature && (
-          <Source type="geojson" data={earthquakeFeature}>
-            <Layer
-              type="circle"
-              filter={filter}
-              paint={{
-                "circle-color": [
-                  "case",
-                  ["==", ["get", "depth_class"], "Gempa Dangkal"],
-                  depthColor[0],
-                  ["==", ["get", "depth_class"], "Gempa Menengah"],
-                  depthColor[1],
-                  depthColor[2],
-                ],
-                "circle-radius": [
-                  "case",
-                  ["==", ["get", "magnitude_class"], "Gempa Kecil"],
-                  3,
-                  ["==", ["get", "magnitude_class"], "Gempa Menengah"],
-                  6,
-                  ["==", ["get", "magnitude_class"], "Gempa Besar"],
-                  9,
-                  15,
-                ],
-              }}
-            />
-          </Source>
-        )}
+        {seismicLayer && <SeismicSensor />}
+        {faultLayer && <Fault />}
+        {faultLayer && <Megathrust />}
         
-        
+        {/* {earthquakeLayer && <Earthquake />} */}
       </Map>
     </DeckGL>
   );
