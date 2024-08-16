@@ -8,7 +8,6 @@ import { useFilter } from "@/contexts/FilterContext";
 import SeismicSensor from "./Map2D/SeismicSensor";
 import Fault from "./Map2D/Fault";
 import Megathrust from "./Map2D/Megathrust";
-// import Earthquake from "./Map2D/Earthquake";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import type { FeatureCollection, Feature, Geometry } from "geojson";
 import { EarthquakeProperties } from "@/contexts/DataContext";

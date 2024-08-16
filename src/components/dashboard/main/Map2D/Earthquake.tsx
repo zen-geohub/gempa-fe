@@ -1,13 +1,13 @@
 import { Source, Layer } from "react-map-gl/maplibre";
-import { FilterSpecification } from "maplibre-gl";
+// import { FilterSpecification } from "maplibre-gl";
 import type { FeatureCollection } from "geojson";
 import { depthColor } from "@/styles/dataStyle";
 import { useData } from "@/contexts/DataContext";
-import { useFilter } from "@/contexts/FilterContext";
+// import { useFilter } from "@/contexts/FilterContext";
 import { useEffect, useState } from "react";
 
 function Earthquake() {
-  const { dateFilter, latitude } = useFilter();
+  // const { dateFilter } = useFilter();
   const { earthquake } = useData();
   const [earthquakeFeature, setEarthquakeFeature] = useState<FeatureCollection>();
   
@@ -42,20 +42,20 @@ function Earthquake() {
   //   console.log('hehe')
   // })
 
-  const filter: FilterSpecification = [
-    "all",
-    [">=", ["get", "date"], dateFilter.startDate],
-    ["<=", ["get", "date"], dateFilter.endDate || dateFilter.startDate],
-    [">=", ["get", "latitude"], latitude.minLatitude],
-    ["<=", ["get", "latitude"], latitude.maxLatitude],
-  ];
+  // const filter: FilterSpecification = [
+  //   "all",
+  //   [">=", ["get", "date"], dateFilter.startDate],
+  //   ["<=", ["get", "date"], dateFilter.endDate || dateFilter.startDate],
+  //   [">=", ["get", "latitude"], latitude.minLatitude],
+  //   ["<=", ["get", "latitude"], latitude.maxLatitude],
+  // ];
 
   return (
     <Source type="geojson" data={earthquakeFeature}>
       <Layer
         id="earthquake"
         type="circle"
-        filter={filter}
+        // filter={filter}
         paint={{
           "circle-color": [
             "case",
