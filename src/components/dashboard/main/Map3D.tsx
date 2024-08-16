@@ -89,7 +89,10 @@ function Map3D() {
               } else {
                 return depthColor[2]
               }
-            })
+            }),
+            line: {
+              width: 0
+            }
           }
         }
       ]}
@@ -97,14 +100,14 @@ function Map3D() {
         paper_bgcolor: theme === 'light' ? "#FFF" : "#020617",
         scene: {
           xaxis: { 
-            title: 'Longitude', 
+            title: 'Bujur', 
             range: [91.64043031, 141.3908] 
           },
           yaxis: { 
-            title: 'Latitude', 
+            title: 'Lintang', 
             range: [-13.9366, 7.78333452] 
           },
-          zaxis: { title: 'Depth' },
+          zaxis: { title: 'Kedalaman (km)' },
           camera: {
             eye: {x: 0, y: -2, z: 1},
           },

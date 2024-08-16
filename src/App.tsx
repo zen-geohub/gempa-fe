@@ -1,6 +1,5 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-// import Dashboard from "./pages/Dashboard";
 import { ThemeProvider } from "./components/theme-provider";
 import { DataContext } from "./contexts/DataContext";
 import { lazy, Suspense } from "react";

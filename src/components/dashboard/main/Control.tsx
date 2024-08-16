@@ -27,6 +27,7 @@ import { LayerControlCard } from "./LayerControl";
 import { HomeIcon } from "@radix-ui/react-icons";
 import ThemeChanger from "../../ThemeChanger";
 import { MapLegendCard } from "./MapLegend";
+import { Link } from "react-router-dom";
 
 type MapStatus = string;
 
@@ -148,9 +149,9 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
             <CardContent className="min-w-52 lg:min-w-64 p-2">
               <div className="w-full flex justify-end">
                 <Button variant="ghost" className="w-fit h-fit p-1" size="icon">
-                  <a href="/#/">
+                  <Link to="/">
                     <HomeIcon />
-                  </a>
+                  </Link>
                 </Button>
                 <ThemeChanger />
               </div>
