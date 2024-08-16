@@ -2,49 +2,127 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { useLayer } from "@/contexts/LayerContext";
 import { cn } from "@/lib/utils";
 import { Cross1Icon, LayersIcon } from "@radix-ui/react-icons";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
-type LayerControlProps = {
-  earthquake: boolean;
-  heatmap: boolean;
-  hexagon: boolean;
-  fault: boolean;
-  seismic: boolean;
-  setEarthquake: Dispatch<SetStateAction<boolean>>;
-  setHeatmap: Dispatch<SetStateAction<boolean>>;
-  setHexagon: Dispatch<SetStateAction<boolean>>;
-  setFault: Dispatch<SetStateAction<boolean>>;
-  setSeismic: Dispatch<SetStateAction<boolean>>;
-};
+export function LayerControlCard() {
+  const {
+    earthquakeLayer,
+    faultLayer,
+    heatmapLayer,
+    hexagonLayer,
+    megathrustLayer,
+    seismicLayer,
+    setEarthquakeLayer,
+    setFaultLayer,
+    setHeatmapLayer,
+    setHexagonLayer,
+    setMegathrustLayer,
+    setSeismicLayer,
+  } = useLayer();
 
-function LayerControl({
-  earthquake,
-  heatmap,
-  hexagon,
-  fault,
-  seismic,
-  setEarthquake,
-  setHeatmap,
-  setHexagon,
-  setFault,
-  setSeismic
-}: LayerControlProps) {
+  return (
+    <CardContent className="flex flex-col gap-1 p-2">
+      <h1 className="font-semibold">Data</h1>
+      <Separator />
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          checked={megathrustLayer}
+          onCheckedChange={() => setMegathrustLayer(!megathrustLayer)}
+          id="megathrust"
+        />
+        <label
+          htmlFor="megathrust"
+          className="flex items-center justify-between w-full gap-2"
+        >
+          Zona Megathrust
+          <div className="w-4 lg:w-5 h-4 lg:h-5 bg-[#4291c65a] border border-[#4291c6]"></div>
+        </label>
+      </div>
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          checked={faultLayer}
+          onCheckedChange={() => setFaultLayer(!faultLayer)}
+          id="fault"
+        />
+        <label
+          htmlFor="fault"
+          className="flex items-center justify-between w-full"
+        >
+          Patahan
+          <div className="w-4 lg:w-5 h-[2px] bg-yellow-500"></div>
+        </label>
+      </div>
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          checked={seismicLayer}
+          onCheckedChange={() => setSeismicLayer(!seismicLayer)}
+          id="seismic"
+        />
+        <label
+          htmlFor="seismic"
+          className="flex items-center justify-between w-full"
+        >
+          Stasiun Seismik
+          <img
+            src="https://inatews.bmkg.go.id/assets_inatews/img/sensor.png"
+            className="w-4 h-4 lg:w-5 lg:h-5"
+          />
+        </label>
+      </div>
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          onCheckedChange={() => setEarthquakeLayer(!earthquakeLayer)}
+          defaultChecked
+          id="earthquake"
+        />
+        <label
+          htmlFor="earthquake"
+          className="flex items-center justify-between w-full"
+        >
+          Gempa Bumi
+          <div className="rounded-full bg-[#808080] w-4 h-4 lg:w-5 lg:h-5"></div>
+        </label>
+      </div>
+
+      <h1 className="mt-2 font-semibold">Agregasi visual</h1>
+      <Separator />
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          checked={heatmapLayer}
+          onCheckedChange={() => setHeatmapLayer(!heatmapLayer)}
+          id="heatmap"
+        />
+        <label htmlFor="heatmap">Heatmap</label>
+      </div>
+      <div className="flex items-center gap-2 text-sm lg:text-base">
+        <Checkbox
+          checked={hexagonLayer}
+          onCheckedChange={() => setHexagonLayer(!hexagonLayer)}
+          id="hexagon"
+        />
+        <label htmlFor="hexagon">Hexagon</label>
+      </div>
+    </CardContent>
+  );
+}
+
+export function LayerControl() {
   const [isLayerControlOpen, setIsLayerControlOpen] = useState<boolean>(false);
 
   return (
     <>
-      <Button
-        size="icon"
-        className={cn(
-          isLayerControlOpen && "hidden",
-          "absolute top-2 right-2 z-10"
-        )}
-        onClick={() => setIsLayerControlOpen(!isLayerControlOpen)}
-      >
-        <LayersIcon />
-      </Button>
+      {!isLayerControlOpen && (
+        <Button
+          size="icon"
+          className="absolute top-2 right-2 z-10 hidden lg:flex"
+          onClick={() => setIsLayerControlOpen(!isLayerControlOpen)}
+        >
+          <LayersIcon />
+        </Button>
+      )}
       <Card
         className={cn(
           isLayerControlOpen ? "translate-x-0" : "translate-x-[210%]",
@@ -59,79 +137,8 @@ function LayerControl({
         >
           <Cross1Icon />
         </Button>
-        <CardContent className="flex flex-col gap-1 p-2">
-          <h1 className="font-semibold">Data</h1>
-          <Separator />
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={fault}
-              onCheckedChange={() => setFault(!fault)}
-              id="fault"
-            />
-            <label htmlFor="fault">Patahan</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={seismic}
-              onCheckedChange={() => setSeismic(!seismic)}
-              id="seismic"
-            />
-            <label htmlFor="seismic">Stasiun Seismik</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              onCheckedChange={() => setEarthquake(!earthquake)}
-              defaultChecked
-              id="earthquake"
-            />
-            <label htmlFor="earthquake">Gempa Bumi</label>
-          </div>
-          
-          <h1 className="mt-2 font-semibold">Agregasi visual</h1>
-          <Separator />
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={heatmap}
-              onCheckedChange={() => setHeatmap(!heatmap)}
-              id="heatmap"
-            />
-            <label htmlFor="heatmap">Heatmap</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={hexagon}
-              onCheckedChange={() => setHexagon(!hexagon)}
-              id="hexagon"
-            />
-            <label htmlFor="hexagon">Hexagon</label>
-          </div>
-        </CardContent>
+        <LayerControlCard />
       </Card>
-      {/* <div
-        className={cn(
-          isLayerControlOpen ? "translate-x-0" : "translate-x-[210%]",
-          "w-fit h-fit absolute p-1 bg-white rounded flex flex-col top-2 right-2 z-10 transition-transform"
-        )}
-      >
-        <div className="flex items-center gap-2">
-          <Checkbox
-            onCheckedChange={() => setEarthquake(!earthquake)}
-            defaultChecked
-            id="earthquake"
-          />
-          <label htmlFor="earthquake">Earthquake</label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox onCheckedChange={() => setHeatmap(!heatmap)} id="heatmap" />
-          <label htmlFor="heatmap">Heatmap</label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox onCheckedChange={() => setHexagon(!hexagon)} id="hexagon" />
-          <label htmlFor="hexagon">Hexagon</label>
-        </div>
-      </div> */}
     </>
   );
 }
-
-export default LayerControl;

@@ -13,6 +13,7 @@ import { SizeIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { depthColor } from "@/styles/dataStyle";
 import { useTheme } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 
 ChartJS.register({
   TimeScale,
@@ -42,7 +43,7 @@ function ScatterChart({ asModal }: ModalProps) {
   return (
     <Bubble
       options={{
-        maintainAspectRatio: asModal ? true : false,
+        maintainAspectRatio: asModal ? false : false,
         plugins: {
           legend: {
             display: asModal ? true : false,
@@ -140,6 +141,8 @@ function ScatterChart({ asModal }: ModalProps) {
 }
 
 function EarthquakeDistribution() {
+  const {theme} = useTheme()
+
   return (
     <Dialog >
       <Card className="w-1/2 h-full relative">
@@ -152,17 +155,17 @@ function EarthquakeDistribution() {
           </Button>
         </DialogTrigger>
         <CardHeader className="p-0 text-center">
-          <CardTitle className="text-sm">Distribusi Gempa</CardTitle>
+          <CardTitle className="text-sm">Distribusi Gempa berdasarkan Magnitudo</CardTitle>
         </CardHeader>
-        <CardContent className="p-0 mb-1 flex h-16 max-h-28">
+        <CardContent className="p-0 mb-1 flex lg:max-h-16 h-max">
           <ScatterChart />
         </CardContent>
       </Card>
-      <DialogContent className="w-full h-4/5">
+      <DialogContent className="w-4/5 py-2 px-1 h-5/6">
         <DialogHeader className="flex justify-center items-center">
-          <DialogTitle>Distribusi Gempa</DialogTitle>
+          <DialogTitle className={cn(theme === 'light' ? 'text-black' : 'text-white', 'text-sm text-wrap')}>Distribusi Gempa berdasarkan Magnitudo</DialogTitle>
         </DialogHeader>
-        <div className="w-full h-full flex justify-center items-center">
+        <div className=" flex justify-center items-center">
           <ScatterChart asModal />
         </div>
       </DialogContent>

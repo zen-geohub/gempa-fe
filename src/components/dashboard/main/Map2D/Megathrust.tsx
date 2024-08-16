@@ -9,7 +9,7 @@ function Megathrust() {
     >
       <Layer type="fill" source-layer="megathrust" 
         paint={{
-          "fill-color": 'red',
+          "fill-color": '#4292c6',
           "fill-opacity": 0.05
         }} 
       />

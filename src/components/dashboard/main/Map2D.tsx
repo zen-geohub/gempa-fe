@@ -11,16 +11,8 @@ import Megathrust from "./Map2D/Megathrust";
 // import Earthquake from "./Map2D/Earthquake";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import type { FeatureCollection, Feature, Geometry } from "geojson";
-import { EarthquakeProperties, useData } from "@/contexts/DataContext";
-import Loading from "@/components/Loading";
-
-interface Map2DProps {
-  earthquakeLayer: boolean;
-  hexagonLayer: boolean;
-  heatmapLayer: boolean;
-  faultLayer: boolean;
-  seismicLayer: boolean;
-}
+import { EarthquakeProperties } from "@/contexts/DataContext";
+import { useLayer } from "@/contexts/LayerContext";
 
 type DataPoint = [
   latitude: number,
@@ -30,22 +22,24 @@ type DataPoint = [
   magnitude_class: string
 ];
 
-function Map2D({
-  earthquakeLayer,
-  heatmapLayer,
-  hexagonLayer,
-  faultLayer,
-  seismicLayer,
-}: Map2DProps) {
+function Map2D() {
   const layers: LayersList = [];
+  const {
+    earthquakeLayer,
+    faultLayer,
+    heatmapLayer,
+    hexagonLayer,
+    megathrustLayer,
+    seismicLayer,
+  } = useLayer();
   const { filteredEarthquake } = useFilter();
-  const {loadingState} = useData()
   const { theme } = useTheme();
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
 
   // const { earthquake } = useData();
-  const [earthquakeFeature, setEarthquakeFeature] = useState<FeatureCollection>();
-  
+  const [earthquakeFeature, setEarthquakeFeature] =
+    useState<FeatureCollection>();
+
   useEffect(() => {
     setEarthquakeFeature({
       type: "FeatureCollection",
@@ -102,12 +96,12 @@ function Map2D({
         data: filteredData,
         extruded: true,
         colorRange: [
-          [1, 152, 189],
-          [73, 227, 206],
-          [216, 254, 181],
-          [254, 237, 177],
-          [254, 173, 84],
-          [209, 55, 78],
+          [255,255,204],
+          [199,233,180],
+          [127,205,187],
+          [65,182,196],
+          [44,127,184],
+          [37,52,148],
         ],
         getPosition: (d) => [d[0], d[1]],
         elevationRange: [0, 3000],
@@ -122,7 +116,7 @@ function Map2D({
         },
       })
     );
-    console.log("hehee");
+
   }
 
   if (earthquakeLayer) {
@@ -131,25 +125,32 @@ function Map2D({
         data: earthquakeFeature,
         filled: true,
         stroked: false,
-        pointType: 'circle',
+        pointType: "circle",
 
         getPointRadius: (f: Feature<Geometry, EarthquakeProperties>) => {
-          if (f.properties.magnitude_class === 'Gempa Kecil') {
-            return 4
-          } else if (f.properties.magnitude_class === 'Gempa Menengah') {
-            return 8
-          } else if (f.properties.magnitude_class === 'Gempa Besar') {
-            return 12
+          if (f.properties.magnitude_class === "Gempa Kecil") {
+            return 5;
+          } else if (f.properties.magnitude_class === "Gempa Menengah") {
+            return 10;
+          } else if (f.properties.magnitude_class === "Gempa Besar") {
+            return 15;
           }
-          return 15
+          return 20;
         },
         pointRadiusScale: 1000,
-        pointRadiusUnits: 'meters',
-        getFillColor: [255,255,255,255],
+        pointRadiusUnits: "meters",
+        getFillColor: (f: Feature<Geometry, EarthquakeProperties>) => {
+          if (f.properties.depth_class === "Gempa Kecil") {
+            return [254, 224, 210];
+          } else if (f.properties.depth_class === "Gempa Menengah") {
+            return [239, 59, 44];
+          }
+          return [103, 0, 13];
+        },
         pickable: true,
         autoHighlight: true,
       })
-    )
+    );
   }
 
   return (
@@ -161,8 +162,8 @@ function Map2D({
       }}
       controller
       layers={layers}
-      getTooltip={
-        ({object}) => object && 
+      getTooltip={({ object }) =>
+        object &&
         `Tanggal: ${object.properties.date}
         Tahun: ${object.properties.year}
         Magnitudo: ${object.properties.magnitude}
@@ -171,8 +172,6 @@ function Map2D({
         Kelas Kedalaman: ${object.properties.depth_class}
         `
       }
-      onClick={({object}) => object && console.log(object)}
-      
     >
       <Map
         reuseMaps
@@ -185,8 +184,8 @@ function Map2D({
       >
         {seismicLayer && <SeismicSensor />}
         {faultLayer && <Fault />}
-        {faultLayer && <Megathrust />}
-        
+        {megathrustLayer && <Megathrust />}
+
         {/* {earthquakeLayer && <Earthquake />} */}
       </Map>
     </DeckGL>

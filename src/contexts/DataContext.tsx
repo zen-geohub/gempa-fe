@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import type { FeatureCollection } from "geojson";
+import { toast } from "sonner";
 
 export type EarthquakeProperties = {
   date: Date;
@@ -84,7 +85,7 @@ export const DataContext: FC<{ children: ReactNode }> = ({ children }) => {
     type: "FeatureCollection",
     features: [],
   });
-  const [loadingState, setLoadingState] = useState<boolean>(false)
+  const [loadingState, setLoadingState] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -113,33 +114,33 @@ export const DataContext: FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     setEarthquake([]);
-    
 
-    if (dateRange.endDate) {
-      // setLoadingState(true)
-      fetch(
-        `${import.meta.env.VITE_BACKEND}/data?startDate=${
-          dateRange.startDate
-        }&endDate=${dateRange.endDate}`,
-        { method: "GET" }
-      )
-        .then((response) => response.json())
-        .then((data) => setEarthquake(data))
-        .catch((err) => console.log(err))
-        // setLoadingState(false)
-    } else if (dateRange.startDate) {
-      // setLoadingState(true)
-      fetch(
-        `${import.meta.env.VITE_BACKEND}/data?startDate=${
-          dateRange.startDate
-        }&endDate=${dateRange.startDate}`,
-        { method: "GET" }
-      )
-        .then((response) => response.json())
-        .then((data) => setEarthquake(data))
-        .catch((err) => console.log(err))
-        // setLoadingState(false)
-    }
+    const fetchData = async (startDate: string, endDate: string) => {
+      setLoadingState(true);
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_BACKEND
+          }/data?startDate=${startDate}&endDate=${endDate}`,
+          { method: "GET" }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        toast('Data berhasil ditambahkan 🎉')
+
+        const data = await response.json();
+        setEarthquake(data);
+      } catch (err) {
+        console.error("Failed to fetch earthquake data:", err);
+        toast('Data gagal ditambahkan 😔')
+      } finally {
+        setLoadingState(false);
+      }
+    };
+    
+    dateRange.endDate && dateRange.startDate && fetchData(dateRange.startDate, dateRange.endDate);
   }, [dateRange]);
 
   return (

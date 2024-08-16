@@ -33,10 +33,10 @@ function EarthquakeAccumulation() {
 
   return (
     <>
-      <Card className="flex-grow flex flex-col justify-center">
-        <CardHeader className="p-0 mt-1 text-center">
+      <Card className="flex flex-col justify-center py-2">
+        <CardHeader className="px-2 py-0 mt-1 text-center">
           <CardTitle className="text-sm">Akumulasi Gempa Bumi</CardTitle>
-          <CardDescription className="text-xs" style={{ marginTop: 0 }}>
+          <CardDescription className="text-xs text-wrap" style={{ marginTop: 0 }}>
             {date.startDate} s.d. {date.endDate}
           </CardDescription>
         </CardHeader>

@@ -9,6 +9,7 @@ import { Dialog, DialogHeader, DialogTrigger, DialogContent, DialogTitle } from 
 import { Button } from "@/components/ui/button";
 import { SizeIcon } from "@radix-ui/react-icons";
 import { useTheme } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 
 ChartJS.register({
   LineElement,
@@ -43,7 +44,7 @@ function LineChart({ asModal }: ModalProps) {
   return (
     <Line
       options={{
-        maintainAspectRatio: asModal ? true : false,
+        maintainAspectRatio: asModal ? false : false,
         plugins: {
           legend: {
             display: asModal ? true : false,
@@ -104,6 +105,8 @@ function LineChart({ asModal }: ModalProps) {
 }
 
 function EarthquakeFrequency() {
+  const {theme} = useTheme()
+
   return (
     <Dialog>
       <Card className="w-1/2 h-full relative">
@@ -118,13 +121,13 @@ function EarthquakeFrequency() {
         <CardHeader className="p-0 text-center">
           <CardTitle className="text-sm">Frekuensi Gempa per Tahun</CardTitle>
         </CardHeader>
-        <CardContent className="p-0 mb-1 max-h-16">
+        <CardContent className="p-0 mb-1 h-fit lg:max-h-16">
           <LineChart />
         </CardContent>
       </Card>
-      <DialogContent className="w-full h-4/5">
+      <DialogContent className="w-4/5 py-2 px-1 h-5/6">
         <DialogHeader className="flex justify-center items-center">
-          <DialogTitle>Frekuensi Gempa per Tahun</DialogTitle>
+          <DialogTitle className={cn(theme === 'light' ? 'text-black' : 'text-white', 'text-sm')}>Frekuensi Gempa per Tahun</DialogTitle>
         </DialogHeader>
         <div className="w-full h-full flex justify-center items-center">
           <LineChart asModal />

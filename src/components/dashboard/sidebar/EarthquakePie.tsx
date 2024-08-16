@@ -46,7 +46,7 @@ function EarthquakePie({value, title}: Props) {
 
   return (
     <>
-      <Card className="min-h-56">
+      <Card className="h-fit lg:min-h-56 flex-grow">
         <CardHeader className="p-0 mt-1 text-center">
           <CardDescription className="text-xs">
             Klasifikasi Gempa
@@ -56,7 +56,7 @@ function EarthquakePie({value, title}: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent className="py-2 mb-1 text-center">
-          <Pie
+          <Pie className=""
             options={{
               maintainAspectRatio: false,
               plugins: {

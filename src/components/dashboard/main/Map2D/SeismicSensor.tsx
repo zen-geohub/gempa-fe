@@ -29,7 +29,7 @@ function SeismicSensor() {
         source-layer="sensorseismik_indonesia"
         layout={{
           "icon-image": "sensor",
-          "icon-size": 0.05,
+          "icon-size": 0.03,
           "icon-allow-overlap": true,
         }}
       />

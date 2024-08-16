@@ -12,7 +12,9 @@ import {
   CalendarIcon,
   Cross1Icon,
   DashboardIcon,
+  DotsVerticalIcon,
   GearIcon,
+  LayersIcon,
   MixerHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { format } from "date-fns";
@@ -21,6 +23,10 @@ import { DateRange } from "react-day-picker";
 import Filter from "./Filter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFilter } from "@/contexts/FilterContext";
+import { LayerControlCard } from "./LayerControl";
+import { HomeIcon } from "@radix-ui/react-icons";
+import ThemeChanger from "../../ThemeChanger";
+import { MapLegendCard } from "./MapLegend";
 
 type MapStatus = string;
 
@@ -31,7 +37,7 @@ type ControlProps = {
 
 function Control({ mapStatus, setMapStatus }: ControlProps) {
   const { earthquake, dateRange, setDateRange } = useData();
-  const { setDateFilter, setLatitude } = useFilter();
+  const { setDateFilter, setMagnitude, setDepth } = useFilter();
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
@@ -67,18 +73,24 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
   }, [date, setDateRange]);
 
   useEffect(() => {
-    const latitudes = earthquake.map(
-      (feature) => feature.properties["latitude"]
+    const magnitudes = earthquake.map(
+      (feature) => feature.properties["magnitude"]
     );
+    const depths = earthquake.map((feature) => feature.properties["depth_km"]);
 
     setDateFilter({
       startDate: dateRange.startDate,
       endDate: dateRange.endDate,
     });
 
-    setLatitude({
-      minLatitude: Math.min(...latitudes),
-      maxLatitude: Math.max(...latitudes),
+    setMagnitude({
+      minMagnitude: Math.min(...magnitudes),
+      maxMagnitude: Math.max(...magnitudes),
+    });
+
+    setDepth({
+      minDepth: Math.min(...depths),
+      maxDepth: Math.max(...depths),
     });
   }, [dateRange, earthquake]);
 
@@ -99,7 +111,7 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
         defaultValue="control"
         className={cn(
           isControlOpen ? "translate-x-[0%]" : "translate-x-[-200%]",
-          "absolute top-2 left-2 transition-transform z-10"
+          "absolute top-2 left-2 transition-transform z-10 max-w-max"
         )}
       >
         <Button
@@ -111,25 +123,45 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
         </Button>
         <TabsList>
           <TabsTrigger value="control">
-            {/* <DashboardIcon /> */}
-            Kontrol
+            <DashboardIcon className="lg:hidden" />
+            <span className="hidden lg:inline-block">Kontrol</span>
           </TabsTrigger>
           <TabsTrigger value="filter">
-            {/* <MixerHorizontalIcon /> */}
-            Filter
+            <MixerHorizontalIcon className="lg:hidden" />
+            <span className="hidden lg:inline-block">Filter</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="layer"
+            className={cn(mapStatus === "3D" && "hidden", "lg:hidden")}
+          >
+            <LayersIcon />
+          </TabsTrigger>
+          <TabsTrigger
+            value="legend"
+            className={cn(mapStatus === "3D" && "hidden", "lg:hidden")}
+          >
+            <DotsVerticalIcon />
           </TabsTrigger>
         </TabsList>
         <TabsContent value="control">
           <Card>
-            <CardContent className="min-w-64 p-2">
-              <h6 className="px-2">Rentang Data</h6>
+            <CardContent className="min-w-52 lg:min-w-64 p-2">
+              <div className="w-full flex justify-end">
+                <Button variant="ghost" className="w-fit h-fit p-1" size="icon">
+                  <a href="/#/">
+                    <HomeIcon />
+                  </a>
+                </Button>
+                <ThemeChanger />
+              </div>
+              <h6 className="px-2 text-sm lg:text-base">Rentang Data</h6>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     id="date"
                     variant={"outline"}
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal text-xs lg:text-sm p-2",
                       !date && "text-muted-foreground"
                     )}
                   >
@@ -156,7 +188,7 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
                     onSelect={(e) => {
                       setDate(e);
                     }}
-                    max={366}
+                    max={1826}
                     fromYear={2004}
                     toYear={2023}
                     captionLayout="dropdown"
@@ -164,7 +196,7 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
                   />
                 </PopoverContent>
               </Popover>
-              <h6 className="mt-2 px-2">Tampilan Peta</h6>
+              <h6 className="mt-2 px-2 text-sm lg:text-base">Tampilan Peta</h6>
               <Tabs
                 value={mapStatus}
                 className="w-full"
@@ -183,6 +215,16 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
             <CardContent className="min-w-64 p-2">
               <Filter />
             </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="layer">
+          <Card className="min-w-52">
+            <LayerControlCard />
+          </Card>
+        </TabsContent>
+        <TabsContent value="legend">
+          <Card>
+            <MapLegendCard />
           </Card>
         </TabsContent>
       </Tabs>
