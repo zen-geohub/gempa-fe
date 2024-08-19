@@ -6,6 +6,7 @@ import { useLayer } from "@/contexts/LayerContext";
 import { cn } from "@/lib/utils";
 import { Cross1Icon, LayersIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import sensor from '../../../assets/sensor.png'
 
 export function LayerControlCard() {
   const {
@@ -38,7 +39,7 @@ export function LayerControlCard() {
           className="flex items-center justify-between w-full gap-2"
         >
           Zona Megathrust
-          <div className="w-4 lg:w-5 h-4 lg:h-5 bg-[#4291c65a] border border-[#4291c6]"></div>
+          <div className="w-4 lg:w-5 h-4 lg:h-5 bg-[#edf8b15a] border border-[#edf8b1]"></div>
         </label>
       </div>
       <div className="flex items-center gap-2 text-sm lg:text-base">
@@ -67,7 +68,7 @@ export function LayerControlCard() {
         >
           Stasiun Seismik
           <img
-            src="https://inatews.bmkg.go.id/assets_inatews/img/sensor.png"
+            src={sensor}
             className="w-4 h-4 lg:w-5 lg:h-5"
           />
         </label>
@@ -83,7 +84,7 @@ export function LayerControlCard() {
           className="flex items-center justify-between w-full"
         >
           Gempa Bumi
-          <div className="rounded-full bg-[#808080] w-4 h-4 lg:w-5 lg:h-5"></div>
+          <div className="rounded-full bg-[#808080] w-4 h-4"></div>
         </label>
       </div>
 
@@ -103,7 +104,7 @@ export function LayerControlCard() {
           onCheckedChange={() => setHexagonLayer(!hexagonLayer)}
           id="hexagon"
         />
-        <label htmlFor="hexagon">Hexagon</label>
+        <label htmlFor="hexagon">Hexagon Grid</label>
       </div>
     </CardContent>
   );

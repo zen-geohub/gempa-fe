@@ -9,6 +9,7 @@ interface CustomGeometry {
   latitudes: number[];
   longitudes: number[];
   depth?: number[];
+  magnitude?: number[];
 }
 
 function Map3D() {
@@ -40,13 +41,15 @@ function Map3D() {
     setEarthquakeData({
       latitudes: [],
       longitudes: [],
-      depth: []
+      depth: [],
+      magnitude: []
     })
 
     setEarthquakeData({
       latitudes: filteredEarthquake.map(feature => feature.geometry.coordinates[1]),
       longitudes: filteredEarthquake.map(feature => feature.geometry.coordinates[0]),
-      depth: filteredEarthquake.map(feature => feature.properties.depth_km * -1)
+      depth: filteredEarthquake.map(feature => feature.properties.depth_km * -1),
+      magnitude: filteredEarthquake.map(feature => feature.properties.magnitude),
     })
   }, [filteredEarthquake])
 
@@ -69,6 +72,13 @@ function Map3D() {
           x: earthquakeData.longitudes,
           y: earthquakeData.latitudes,
           z: earthquakeData.depth,
+          // hoverinfo: "text",
+          // hovertext: Object.entries(earthquakeData).map(([key, value]) => {
+          //   return `
+          //     ${key}: ${value}
+          //   `
+          // }),
+          hovertemplate: 'Bujur: %{x}<br />' + 'Lintang: %{y}<br />' + 'Kedalaman (km): %{z}',
           marker: {
             size: filteredEarthquake.map(feature => {
               if (feature.properties.magnitude_class === 'Gempa Kecil') {

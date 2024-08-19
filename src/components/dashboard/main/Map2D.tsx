@@ -95,12 +95,12 @@ function Map2D() {
         data: filteredData,
         extruded: true,
         colorRange: [
-          [255,255,204],
-          [199,233,180],
-          [127,205,187],
-          [65,182,196],
-          [44,127,184],
-          [37,52,148],
+          [158,202,225],
+          [107,174,214],
+          [66,146,198],
+          [33,113,181],
+          [8,81,156],
+          [8,48,107],
         ],
         getPosition: (d) => [d[0], d[1]],
         elevationRange: [0, 3000],
@@ -139,7 +139,7 @@ function Map2D() {
         pointRadiusScale: 1000,
         pointRadiusUnits: "meters",
         getFillColor: (f: Feature<Geometry, EarthquakeProperties>) => {
-          if (f.properties.depth_class === "Gempa Kecil") {
+          if (f.properties.depth_class === "Gempa Dangkal") {
             return [254, 224, 210];
           } else if (f.properties.depth_class === "Gempa Menengah") {
             return [239, 59, 44];
@@ -158,6 +158,8 @@ function Map2D() {
         latitude: -1.5970319028936064,
         longitude: 116.90854467352956,
         zoom: 4,
+        maxZoom: 7,
+        minZoom: 3.5
       }}
       controller
       layers={layers}

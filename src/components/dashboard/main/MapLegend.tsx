@@ -11,8 +11,34 @@ export function MapLegendCard() {
 
   return (
     <CardContent className="p-2">
-      <ScrollArea className="w-[340px]">
+      <ScrollArea className="w-[340px] lg:w-[450px]">
         <div className="w-max flex gap-2">
+          {heatmapLayer && (
+            <div className="text-xs lg:text-base">
+              <h1 className="text-center text-base font-bold mb-1">Heatmap</h1>
+              <div className="flex gap-2">
+                <div className="bg-gradient-to-t from-[#ffffb2] from-0% via-[#fd8d3c] via-45% to-[#bd0026] to-100% w-4 h-20"></div>
+                <div className="flex flex-col justify-between">
+                  <p>Lebih banyak kejadian gempa</p>
+                  <p>Lebih sedikit kejadian gempa</p>
+                </div>
+              </div>
+            </div>
+          )}
+          {hexagonLayer && (
+            <div className="text-xs lg:text-base">
+              <h1 className="text-center text-base font-bold mb-1">
+                Hexagon Grid
+              </h1>
+              <div className="flex gap-2">
+                <div className="bg-gradient-to-t from-[#9ecae1] from-0% via-[#2171b5] via-55% to-[#08306b] to-100% w-4 h-20"></div>
+                <div className="flex flex-col justify-between">
+                  <p>Lebih banyak kejadian gempa</p>
+                  <p>Lebih sedikit kejadian gempa</p>
+                </div>
+              </div>
+            </div>
+          )}
           <table>
             <thead>
               <tr>
@@ -71,30 +97,6 @@ export function MapLegendCard() {
               <p>Gempa Dalam (&ge;300)</p>
             </div>
           </div>
-          {heatmapLayer && (
-            <div className="text-xs lg:text-base">
-              <h1 className="text-center text-base font-bold mb-1">Heatmap</h1>
-              <div className="flex gap-2">
-                <div className="bg-gradient-to-t from-[#ffffb2] from-0% via-[#fd8d3c] via-45% to-[#bd0026] to-100% w-4 h-20"></div>
-                <div className="flex flex-col justify-between">
-                  <p>Lebih banyak kejadian gempa</p>
-                  <p>Lebih sedikit kejadian gempa</p>
-                </div>
-              </div>
-            </div>
-          )}
-          {hexagonLayer && (
-            <div className="text-xs lg:text-base">
-              <h1 className="text-center text-base font-bold mb-1">Hexagon</h1>
-              <div className="flex gap-2">
-                <div className="bg-gradient-to-t from-[#ffffcc] from-0% via-[#41b6c4] via-45% to-[#253494] to-100% w-4 h-20"></div>
-                <div className="flex flex-col justify-between">
-                  <p>Lebih banyak kejadian gempa</p>
-                  <p>Lebih sedikit kejadian gempa</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

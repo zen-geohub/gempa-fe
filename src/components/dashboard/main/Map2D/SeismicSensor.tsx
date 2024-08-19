@@ -1,14 +1,13 @@
 import { useEffect } from "react";
 import { Source, Layer, useMap } from "react-map-gl/maplibre";
+import sensor from '../../../../assets/sensor.png'
 
 function SeismicSensor() {
   const { current: map } = useMap();
 
   useEffect(() => {
     (async () => {
-      const image = await map?.loadImage(
-        "https://inatews.bmkg.go.id/assets_inatews/img/sensor.png"
-      );
+      const image = await map?.loadImage(sensor);
       if (map && image && !map.hasImage("sensor"))
         map.addImage("sensor", image.data);
     })();
