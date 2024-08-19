@@ -67,6 +67,7 @@ function Map3D() {
           hoverinfo: 'skip',
         },
         {
+          name: 'Titik Gempa',
           type: 'scatter3d',
           mode: 'markers',
           x: earthquakeData.longitudes,
