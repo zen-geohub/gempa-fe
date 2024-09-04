@@ -2,7 +2,7 @@ import { Separator } from "../ui/separator";
 
 function DataSource() {
   return (
-    <div className="h-[calc(50dvh-64px)] w-dvw flex flex-col gap-4 items-center px-12 py-8 font-poppins bg-slate-950 text-white dark:bg-white dark:text-black lg:justify-center lg:h-fit lg:py-14">
+    <div className="h-[calc(50dvh-64px)] w-dvw flex flex-col gap-4 items-center px-12 py-8 font-poppins bg-slate-950 text-white dark:bg-white dark:text-black lg:justify-center lg:h-fit lg:py-14 ">
       <h1 className="font-bold text-3xl ">Sumber Data</h1>
       <Separator className="w-12" />
       <p className="text-justify lg:text-center text-sm lg:text-base">
