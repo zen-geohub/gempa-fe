@@ -1,6 +1,6 @@
-import { DeckGL } from "@deck.gl/react";
-import 'maplibre-gl/dist/maplibre-gl.css'
-import Map, { ScaleControl, NavigationControl } from "react-map-gl/maplibre";
+import { DeckGL,  } from "@deck.gl/react";
+import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { ScaleControl } from "react-map-gl/maplibre";
 import { useEffect, useState } from "react";
 import { LayersList, MapViewState } from "@deck.gl/core";
 import { useTheme } from "@/components/theme-provider";
@@ -22,7 +22,7 @@ type DataPoint = [
   magnitude_class: string
 ];
 
-function Map2D({initialViewState}: {initialViewState: MapViewState}) {
+function Map2D({ initialViewState }: { initialViewState: MapViewState }) {
   const layers: LayersList = [];
   const {
     earthquakeLayer,
@@ -36,9 +36,7 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
   const { theme } = useTheme();
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
 
-  
-  const [earthquakeFeature, setEarthquakeFeature] =
-    useState<FeatureCollection>();
+  const [earthquakeFeature, setEarthquakeFeature] = useState<FeatureCollection>();
 
   useEffect(() => {
     setEarthquakeFeature({
@@ -96,12 +94,12 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
         data: filteredData,
         extruded: true,
         colorRange: [
-          [158,202,225],
-          [107,174,214],
-          [66,146,198],
-          [33,113,181],
-          [8,81,156],
-          [8,48,107],
+          [158, 202, 225],
+          [107, 174, 214],
+          [66, 146, 198],
+          [33, 113, 181],
+          [8, 81, 156],
+          [8, 48, 107],
         ],
         getPosition: (d) => [d[0], d[1]],
         elevationRange: [0, 3000],
@@ -116,7 +114,6 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
         },
       })
     );
-
   }
 
   if (earthquakeLayer) {
@@ -141,11 +138,11 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
         pointRadiusUnits: "meters",
         getFillColor: (f: Feature<Geometry, EarthquakeProperties>) => {
           if (f.properties.depth_class === "Gempa Dangkal") {
-            return [251,106,74];
+            return [251, 106, 74];
           } else if (f.properties.depth_class === "Gempa Menengah") {
-            return [203,24,29];
+            return [203, 24, 29];
           }
-          return [103,0,13];
+          return [103, 0, 13];
         },
         pickable: true,
         autoHighlight: true,
@@ -178,13 +175,10 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
             : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         }
       >
-        <NavigationControl position="bottom-left" />
         <ScaleControl maxWidth={100} />
         {seismicLayer && <SeismicSensor />}
         {faultLayer && <Fault />}
         {megathrustLayer && <Megathrust />}
-
-        {/* {earthquakeLayer && <Earthquake />} */}
       </Map>
     </DeckGL>
   );
