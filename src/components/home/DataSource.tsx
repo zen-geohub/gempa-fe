@@ -6,7 +6,8 @@ function DataSource() {
       <h1 className="font-bold text-3xl ">Sumber Data</h1>
       <Separator className="w-12" />
       <p className="text-justify lg:text-center text-sm lg:text-base">
-        Data yang digunakan bersumber dari lembaga resmi, yaitu{" "} <br className="hidden lg:block"/>
+        Data yang digunakan bersumber dari lembaga resmi, yaitu{" "}
+        <br className="hidden lg:block" />
         <span className="font-semibold">
           Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)
         </span>{" "}

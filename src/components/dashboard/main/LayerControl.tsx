@@ -5,10 +5,17 @@ import { Separator } from "@/components/ui/separator";
 import { useLayer } from "@/contexts/LayerContext";
 import { cn } from "@/lib/utils";
 import { Cross1Icon, LayersIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
-import sensor from '../../../assets/sensor.png'
+import { Dispatch, SetStateAction, useState } from "react";
+import sensor from "../../../assets/sensor.png";
+import { MapViewState } from "@deck.gl/core";
 
-export function LayerControlCard() {
+export function LayerControlCard({
+  initialViewState,
+  setInitialViewState,
+}: {
+  initialViewState: MapViewState;
+  setInitialViewState: Dispatch<SetStateAction<MapViewState>>;
+}) {
   const {
     earthquakeLayer,
     faultLayer,
@@ -67,10 +74,7 @@ export function LayerControlCard() {
           className="flex items-center justify-between w-full"
         >
           Stasiun Seismik
-          <img
-            src={sensor}
-            className="w-4 h-4 lg:w-5 lg:h-5"
-          />
+          <img src={sensor} className="w-4 h-4 lg:w-5 lg:h-5" />
         </label>
       </div>
       <div className="flex items-center gap-2 text-sm lg:text-base">
@@ -101,7 +105,20 @@ export function LayerControlCard() {
       <div className="flex items-center gap-2 text-sm lg:text-base">
         <Checkbox
           checked={hexagonLayer}
-          onCheckedChange={() => setHexagonLayer(!hexagonLayer)}
+          onCheckedChange={() => {
+            setHexagonLayer(!hexagonLayer);
+            hexagonLayer
+              ? setInitialViewState({
+                  ...initialViewState,
+                  pitch: 0,
+                  transitionDuration: 300,
+                })
+              : setInitialViewState({
+                  ...initialViewState,
+                  pitch: 60,
+                  transitionDuration: 300,
+                });
+          }}
           id="hexagon"
         />
         <label htmlFor="hexagon">Hexagon Grid</label>
@@ -110,7 +127,13 @@ export function LayerControlCard() {
   );
 }
 
-export function LayerControl() {
+export function LayerControl({
+  initialViewState,
+  setInitialViewState,
+}: {
+  initialViewState: MapViewState;
+  setInitialViewState: Dispatch<SetStateAction<MapViewState>>;
+}) {
   const [isLayerControlOpen, setIsLayerControlOpen] = useState<boolean>(false);
 
   return (
@@ -138,7 +161,10 @@ export function LayerControl() {
         >
           <Cross1Icon />
         </Button>
-        <LayerControlCard />
+        <LayerControlCard
+          initialViewState={initialViewState}
+          setInitialViewState={setInitialViewState}
+        />
       </Card>
     </>
   );

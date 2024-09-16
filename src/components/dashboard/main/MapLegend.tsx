@@ -85,11 +85,11 @@ export function MapLegendCard() {
               Kedalaman (km)
             </h1>
             <div className="flex items-center gap-1 mb-1">
-              <div className={"w-5 h-5 bg-[#fcbba1]"}></div>
+              <div className={"w-5 h-5 bg-[#fb6a4a]"}></div>
               <p>Gempa Dangkal (&le;70)</p>
             </div>
             <div className="flex items-center gap-1 mb-1">
-              <div className={"w-5 h-5 bg-[#ef3b2c]"}></div>
+              <div className={"w-5 h-5 bg-[#cb181d]"}></div>
               <p>Gempa Menengah (70 - 300)</p>
             </div>
             <div className="flex items-center gap-1 mb-1">

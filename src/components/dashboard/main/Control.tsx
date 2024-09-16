@@ -28,15 +28,23 @@ import { HomeIcon } from "@radix-ui/react-icons";
 import ThemeChanger from "../../ThemeChanger";
 import { MapLegendCard } from "./MapLegend";
 import { Link } from "react-router-dom";
+import { MapViewState } from "@deck.gl/core";
 
 type MapStatus = string;
 
 type ControlProps = {
   mapStatus: MapStatus;
   setMapStatus: Dispatch<SetStateAction<MapStatus>>;
+  initialViewState: MapViewState;
+  setInitialViewState: Dispatch<SetStateAction<MapViewState>>;
 };
 
-function Control({ mapStatus, setMapStatus }: ControlProps) {
+function Control({
+  mapStatus,
+  setMapStatus,
+  initialViewState,
+  setInitialViewState,
+}: ControlProps) {
   const { earthquake, dateRange, setDateRange } = useData();
   const { setDateFilter, setMagnitude, setDepth } = useFilter();
 
@@ -220,7 +228,10 @@ function Control({ mapStatus, setMapStatus }: ControlProps) {
         </TabsContent>
         <TabsContent value="layer">
           <Card className="min-w-52">
-            <LayerControlCard />
+            <LayerControlCard
+              initialViewState={initialViewState}
+              setInitialViewState={setInitialViewState}
+            />
           </Card>
         </TabsContent>
         <TabsContent value="legend">
