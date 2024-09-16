@@ -178,7 +178,7 @@ function Map2D({initialViewState}: {initialViewState: MapViewState}) {
             : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         }
       >
-        <NavigationControl />
+        <NavigationControl position="bottom-left" />
         <ScaleControl maxWidth={100} />
         {seismicLayer && <SeismicSensor />}
         {faultLayer && <Fault />}
