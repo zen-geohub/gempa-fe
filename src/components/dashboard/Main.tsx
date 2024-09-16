@@ -14,19 +14,41 @@ import { cn } from "@/lib/utils";
 import Infobar from "./sidebar/Infobar";
 import { ScrollBar, ScrollArea } from "../ui/scroll-area";
 import BrandCard from "./main/BrandCard";
+import { MapViewState } from "@deck.gl/core";
 
 function Main() {
   const { earthquake } = useData();
   const [mapStatus, setMapStatus] = useState<string>("2D");
   const [isFooterOpen, setIsFooterOpen] = useState<boolean>(false);
+  const [initialViewState, setInitialViewState] = useState<MapViewState>({
+    latitude: -1.5970319028936064,
+    longitude: 116.90854467352956,
+    zoom: 4,
+    maxZoom: 7,
+    minZoom: 3.5,
+  });
 
   return (
     <main className="w-dvw lg:w-[85%] h-dvh flex flex-col overflow-hidden relative">
       <section className="w-full flex-grow pr-1 pb-1 relative">
-        <Control mapStatus={mapStatus} setMapStatus={setMapStatus} />
-        {mapStatus === "2D" && <LayerControl />}
+        <Control
+          initialViewState={initialViewState}
+          setInitialViewState={setInitialViewState}
+          mapStatus={mapStatus}
+          setMapStatus={setMapStatus}
+        />
+        {mapStatus === "2D" && (
+          <LayerControl
+            initialViewState={initialViewState}
+            setInitialViewState={setInitialViewState}
+          />
+        )}
         {mapStatus === "2D" && <MapLegend />}
-        {mapStatus === "2D" ? <Map2D /> : <Map3D />}
+        {mapStatus === "2D" ? (
+          <Map2D initialViewState={initialViewState} />
+        ) : (
+          <Map3D />
+        )}
       </section>
       {earthquake.length > 0 ? (
         <footer className="hidden lg:w-full lg:h-[15%] lg:p-1 lg:flex lg:gap-2">

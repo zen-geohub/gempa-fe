@@ -33,10 +33,12 @@ function Footer() {
           <Card className="hidden lg:flex w-2/6">
             <CardContent className="flex items-center p-3">
               <div>
-              <SewingPinIcon className="w-fit h-16 "/>
+                <SewingPinIcon className="w-fit h-16 " />
               </div>
-              <p className="">Jl. Grafika Bulaksumur No.2, Sendowo, Sinduadi, Kabupaten Sleman,
-              Daerah Istimewa Yogyakarta 55281</p>
+              <p className="">
+                Jl. Grafika Bulaksumur No.2, Sendowo, Sinduadi, Kabupaten
+                Sleman, Daerah Istimewa Yogyakarta 55281
+              </p>
             </CardContent>
           </Card>
           <Card className="">

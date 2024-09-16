@@ -1,7 +1,8 @@
 import { DeckGL } from "@deck.gl/react";
-import Map from "react-map-gl/maplibre";
+import 'maplibre-gl/dist/maplibre-gl.css'
+import Map, { ScaleControl, NavigationControl } from "react-map-gl/maplibre";
 import { useEffect, useState } from "react";
-import { LayersList } from "@deck.gl/core";
+import { LayersList, MapViewState } from "@deck.gl/core";
 import { useTheme } from "@/components/theme-provider";
 import { HeatmapLayer, HexagonLayer } from "@deck.gl/aggregation-layers";
 import { useFilter } from "@/contexts/FilterContext";
@@ -21,7 +22,7 @@ type DataPoint = [
   magnitude_class: string
 ];
 
-function Map2D() {
+function Map2D({initialViewState}: {initialViewState: MapViewState}) {
   const layers: LayersList = [];
   const {
     earthquakeLayer,
@@ -35,7 +36,7 @@ function Map2D() {
   const { theme } = useTheme();
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
 
-  // const { earthquake } = useData();
+  
   const [earthquakeFeature, setEarthquakeFeature] =
     useState<FeatureCollection>();
 
@@ -140,11 +141,11 @@ function Map2D() {
         pointRadiusUnits: "meters",
         getFillColor: (f: Feature<Geometry, EarthquakeProperties>) => {
           if (f.properties.depth_class === "Gempa Dangkal") {
-            return [254, 224, 210];
+            return [251,106,74];
           } else if (f.properties.depth_class === "Gempa Menengah") {
-            return [239, 59, 44];
+            return [203,24,29];
           }
-          return [103, 0, 13];
+          return [103,0,13];
         },
         pickable: true,
         autoHighlight: true,
@@ -154,13 +155,7 @@ function Map2D() {
 
   return (
     <DeckGL
-      initialViewState={{
-        latitude: -1.5970319028936064,
-        longitude: 116.90854467352956,
-        zoom: 4,
-        maxZoom: 7,
-        minZoom: 3.5
-      }}
+      initialViewState={initialViewState}
       controller
       layers={layers}
       getTooltip={({ object }) =>
@@ -183,6 +178,8 @@ function Map2D() {
             : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         }
       >
+        <NavigationControl />
+        <ScaleControl maxWidth={100} />
         {seismicLayer && <SeismicSensor />}
         {faultLayer && <Fault />}
         {megathrustLayer && <Megathrust />}
