@@ -197,7 +197,7 @@ function Control({
                     onSelect={(e) => {
                       setDate(e);
                     }}
-                    max={1826}
+                    max={366}
                     fromYear={2004}
                     toYear={2023}
                     captionLayout="dropdown"

@@ -29,7 +29,7 @@ function KeyFeatures() {
           </CardHeader>
           <CardContent className="p-4 lg:p-6 pt-0 lg:pt-0">
             <CardDescription className="text-justify text-xs lg:text-base">
-              Pengguna dapat memilih rentang waktu hingga 5 tahun untuk
+              Pengguna dapat memilih rentang waktu hingga satu tahun untuk
               memvisualisasikan data sesuai kebutuhan.
             </CardDescription>
           </CardContent>
